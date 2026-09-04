@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "PrivGuard Watermark Remover",
+  "name": "PrivGuard — Local Watermark Remover",
   "version": "0.1.0",
   "description": "Remove image watermarks 100% locally in your browser. No uploads, no server, privacy-first. Built for regulated teams.",
   "icons": {

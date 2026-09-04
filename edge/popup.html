@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -38,8 +38,8 @@
     <canvas id="view"></canvas>
     <canvas id="mask" class="hide"></canvas>
     <canvas id="orig" class="hide"></canvas>
-    <div class="meta" id="meta">涂抹水印区域后点「去除」</div>
-    <div class="note">OpenCV.js 首次需联网加载一次纯代码库（图片始终在你的设备内，绝不上传）。</div>
+    <div class="meta" id="meta">Brush the watermark area, then click Remove</div>
+    <div class="note">OpenCV.js loads its code library from CDN once (images always stay on your device, never uploaded).</div>
   </div>
 </div>
 <script>
@@ -94,9 +94,9 @@
   ['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag');}));
   ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag');}));
   drop.addEventListener('drop',e=>load(e.dataTransfer.files[0]));
-  clear.onclick=()=>{if(!img)return;mask.getContext('2d').clearRect(0,0,mask.width,mask.height);view.getContext('2d').drawImage(img,0,0,mask.width,mask.height);meta.textContent='已清除，可重涂';dl.disabled=true;blob=null;};
-  remove.onclick=async()=>{if(!img)return;meta.textContent='加载引擎…';try{await loadCV();}catch(e){meta.textContent='引擎加载失败：'+e.message;return;}meta.textContent='去除中（本地）…';try{
-    const src=cv.imread(orig);const msrc=cv.imread(mask);const m=new cv.Mat();cv.cvtColor(msrc,m,cv.COLOR_BGRA2GRAY);cv.threshold(m,m,30,255,cv.THRESH_BINARY);const dst=new cv.Mat();cv.inpaint(src,m,3,cv.INPAINT_TELEA,dst);cv.imshow(view,dst);meta.textContent='✓ 完成 · 图片未离开设备';view.toBlob(b=>{blob=b;dl.disabled=false;},'image/png');src.delete();msrc.delete();m.delete();dst.delete();}catch(e){meta.textContent='出错：'+e.message;}};
+  clear.onclick=()=>{if(!img)return;mask.getContext('2d').clearRect(0,0,mask.width,mask.height);view.getContext('2d').drawImage(img,0,0,mask.width,mask.height);meta.textContent='Cleared — you can re-brush';dl.disabled=true;blob=null;};
+  remove.onclick=async()=>{if(!img)return;meta.textContent='Loading engine...';try{await loadCV();}catch(e){meta.textContent='Engine failed to load: '+e.message;return;}meta.textContent='Removing (locally)...';try{
+    const src=cv.imread(orig);const msrc=cv.imread(mask);const m=new cv.Mat();cv.cvtColor(msrc,m,cv.COLOR_BGRA2GRAY);cv.threshold(m,m,30,255,cv.THRESH_BINARY);const dst=new cv.Mat();cv.inpaint(src,m,3,cv.INPAINT_TELEA,dst);cv.imshow(view,dst);meta.textContent='✓ Done · image never left your device';view.toBlob(b=>{blob=b;dl.disabled=false;},'image/png');src.delete();msrc.delete();m.delete();dst.delete();}catch(e){meta.textContent='Error: '+e.message;}};
   dl.onclick=()=>{if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='privguard-cleaned.png';a.click();};
 </script>
 </body>
