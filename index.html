@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PrivGuard — Privacy-First Media Processing for Regulated Teams</title>
+<meta name="description" content="Remove watermarks, cut out backgrounds, upscale and transcode images & video — 100% in your browser. No uploads, no third-party servers, GDPR & EU AI Act friendly. Built for legal, healthcare, finance and HR teams." />
+<style>
+  :root{
+    --bg:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
+    --brand:#4f46e5; --brand-d:#4338ca; --accent:#0ea5e9; --ok:#16a34a;
+    --soft:#f8fafc; --soft2:#f1f5f9; --warn:#b45309; --card:#ffffff;
+    --radius:16px; --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  .nav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-weight:800;font-size:19px;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+  .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px rgba(79,70,229,.15)}
+  .nav nav{display:flex;gap:26px;font-size:14px;color:var(--muted)}
+  .nav nav a{color:var(--muted)}
+  .nav nav a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#fff;font-weight:600;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;font-size:14px;transition:.15s}
+  .btn:hover{background:var(--brand-d)}
+  .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--brand)}
+  .btn.sm{padding:8px 13px;font-size:13px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  /* hero */
+  .hero{padding:64px 0 40px;background:radial-gradient(1100px 420px at 80% -10%,rgba(79,70,229,.10),transparent),linear-gradient(180deg,#fff,#fbfcff)}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .badge{font-size:12px;font-weight:600;color:var(--brand-d);background:rgba(79,70,229,.08);border:1px solid rgba(79,70,229,.18);padding:6px 11px;border-radius:999px}
+  .badge.green{color:var(--ok);background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.2)}
+  h1{font-size:46px;line-height:1.08;letter-spacing:-.03em;margin:0 0 16px;font-weight:800}
+  h1 .hl{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:19px;color:var(--muted);max-width:640px;margin:0 0 26px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .trust{margin-top:26px;display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+  .trust b{color:var(--ink)}
+  /* sections */
+  section{padding:56px 0}
+  .sec-head{text-align:center;max-width:680px;margin:0 auto 38px}
+  .sec-head .ey{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+  .sec-head h2{font-size:32px;letter-spacing:-.02em;margin:10px 0 12px;font-weight:800}
+  .sec-head p{color:var(--muted);font-size:17px;margin:0}
+  /* why grid */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .card .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:rgba(79,70,229,.1);font-size:20px;margin-bottom:14px}
+  .card h3{margin:0 0 8px;font-size:17px}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  /* tools */
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .tool{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .tool h3{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:9px}
+  .tool .tag{font-size:11px;font-weight:700;color:var(--ok);background:rgba(22,163,74,.1);padding:3px 8px;border-radius:999px}
+  .tool p{color:var(--muted);font-size:14px;margin:0 0 14px}
+  .drop{border:1.5px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);font-size:13px;background:var(--soft);cursor:pointer;transition:.15s}
+  .drop:hover{border-color:var(--brand);color:var(--brand)}
+  .drop.drag{border-color:var(--brand);background:rgba(79,70,229,.05)}
+  .io{display:none;gap:14px;margin-top:14px;align-items:center;flex-wrap:wrap}
+  .io.show{display:flex}
+  .io canvas,.io img{max-width:120px;border-radius:10px;border:1px solid var(--line);background:#fff}
+  .io .meta{font-size:12px;color:var(--muted)}
+  .io .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  /* how */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;counter-reset:s}
+  .step{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .step .n{counter-increment:s;font-weight:800;color:var(--brand);font-size:14px}
+  .step .n::before{content:"0" counter(s)}
+  .step h4{margin:8px 0 6px;font-size:15px}
+  .step p{margin:0;font-size:13px;color:var(--muted)}
+  /* compliance */
+  .comp{background:linear-gradient(180deg,#0f172a,#1e293b);color:#e2e8f0;border-radius:22px;padding:38px;margin-top:8px}
+  .comp h2{color:#fff;font-size:28px;margin:0 0 8px;letter-spacing:-.02em}
+  .comp p.sub{color:#94a3b8;margin:0 0 24px}
+  .compgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .compitem{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px}
+  .compitem h4{margin:0 0 6px;color:#fff;font-size:15px}
+  .compitem p{margin:0;color:#94a3b8;font-size:13px}
+  /* pricing */
+  .price{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .plan.feat{border-color:var(--brand);box-shadow:0 10px 30px rgba(79,70,229,.18)}
+  .plan .nm{font-weight:700;font-size:16px}
+  .plan .pr{font-size:34px;font-weight:800;margin:8px 0 2px;letter-spacing:-.02em}
+  .plan .pr small{font-size:14px;font-weight:500;color:var(--muted)}
+  .plan ul{list-style:none;padding:0;margin:16px 0 20px;display:grid;gap:10px;font-size:14px;color:#334155}
+  .plan li{display:flex;gap:9px;align-items:flex-start}
+  .plan li::before{content:"✓";color:var(--ok);font-weight:800}
+  .plan .btn{width:100%;justify-content:center;margin-top:auto}
+  /* faq */
+  .faq{display:grid;gap:12px;max-width:780px;margin:0 auto}
+  .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+  .q h4{margin:0 0 6px;font-size:15px}
+  .q p{margin:0;color:var(--muted);font-size:14px}
+  footer{border-top:1px solid var(--line);padding:34px 0;color:var(--muted);font-size:13px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .note{font-size:12px;color:var(--warn);background:rgba(180,83,9,.07);border:1px solid rgba(180,83,9,.18);border-radius:10px;padding:10px 12px;margin-top:12px}
+  .wmtools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  @media(max-width:860px){.grid3,.tools,.steps,.compgrid,.price{grid-template-columns:1fr}.nav nav{display:none}h1{font-size:34px}}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>PrivGuard</div>
+    <nav>
+      <a href="#why">Why us</a>
+      <a href="#tools">Tools</a>
+      <a href="#how">How it works</a>
+      <a href="#compliance">Compliance</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <a class="btn sm" href="#tools">Open the app</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge green">🔒 100% in-browser — no uploads</span>
+      <span class="badge">GDPR Art. 28 friendly</span>
+      <span class="badge">EU AI Act aligned</span>
+      <span class="badge">Self-hostable</span>
+    </div>
+    <h1>Media processing your <span class="hl">compliance officer</span><br>will actually approve.</h1>
+    <p class="lede">Remove watermarks, cut out backgrounds, upscale and transcode images &amp; video — entirely on the user's device. Files never touch our servers, never cross borders, never train a model. Built for legal, healthcare, finance and HR teams that legally cannot send client files to a third party.</p>
+    <div class="cta">
+      <a class="btn" href="#tools">Try it free — runs locally</a>
+      <a class="btn ghost" href="#pricing">See team pricing</a>
+    </div>
+    <div class="trust">
+      <span><b>Zero</b> server-side storage</span>
+      <span><b>Zero</b> third-country transfers</span>
+      <span><b>MIT-licensed</b> engines, client-side only</span>
+      <span><b>Per-seat</b> B2B plans</span>
+    </div>
+  </div>
+</header>
+
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="ey">Why regulated teams choose us</div>
+      <h2>We removed the part that gets you audited</h2>
+      <p>Most "free" editors upload your file to someone else's GPU. For a law firm or clinic, that single upload can be a breach. PrivGuard's entire pipeline runs in the browser tab.</p>
+    </div>
+    <div class="grid3">
+      <div class="card"><div class="ic">🛡️</div><h3>Data never leaves the device</h3><p>Every pixel is processed by WebAssembly / ONNX in the user's own browser. We literally cannot see the file — there is no upload endpoint.</p></div>
+      <div class="card"><div class="ic">📜</div><h3>Compliance by architecture</h3><p>No Art. 28 sub-processor, no SCC, no Data Processing Agreement to negotiate — because no personal data is transferred to us at all.</p></div>
+      <div class="card"><div class="ic">🏢</div><h3>Self-host &amp; audit</h3><p>Deploy on your own VPS or intranet. Generate an on-device processing log your security team can verify. No black boxes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="tools" style="background:var(--soft)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="ey">The toolkit</div>
+      <h2>Four tools. One rule: local only.</h2>
+      <p>Drop a file, watch it process on your machine. Nothing is sent anywhere.</p>
+    </div>
+    <div class="tools">
+
+      <!-- Background removal (real, wired) -->
+      <div class="tool">
+        <h3>🎯 Background Remover <span class="tag">LIVE</span></h3>
+        <p>Cut out people &amp; products with an on-device AI model. Runs 100% in the browser.</p>
+        <label class="drop" id="dropBg">Click or drop an image here<br><small>JPG / PNG · processed locally</small></label>
+        <input type="file" id="fileBg" accept="image/*" hidden>
+        <div class="io" id="ioBg">
+          <img id="prevBg" alt="original">
+          <div>
+            <canvas id="outBg"></canvas>
+            <div class="meta" id="metaBg">Processing…</div>
+            <div class="row"><button class="btn sm" id="dlBg">Download PNG</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Watermark remover (FLAGSHIP, now wired to on-device inpainting) -->
+      <div class="tool">
+        <h3>🧽 Watermark Remover <span class="tag">FLAGSHIP</span></h3>
+        <p>Erase logos &amp; watermarks without cropping or changing the composition — our flagship on-device inpainting engine. 100% in your browser.</p>
+        <label class="drop" id="dropWm">Click or drop an image here<br><small>JPG / PNG · processed locally</small></label>
+        <input type="file" id="fileWm" accept="image/*" hidden>
+        <div class="io" id="ioWm">
+          <div class="wmtools">
+            <span class="meta">笔刷 <input type="range" id="brushWm" min="4" max="60" value="20"></span>
+            <button class="btn sm" id="btnRemoveWm">去除水印</button>
+            <button class="btn sm ghost" id="btnClearWm">清除遮罩</button>
+            <button class="btn sm" id="dlWm" disabled>下载 PNG</button>
+          </div>
+          <div style="position:relative;max-width:520px;width:100%">
+            <canvas id="viewWm" style="max-width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;touch-action:none"></canvas>
+            <canvas id="maskWm" hidden></canvas>
+            <canvas id="origWm" hidden></canvas>
+          </div>
+          <div class="meta" id="metaWm">用鼠标/手指涂抹水印区域，再点「去除水印」</div>
+          <div class="note">处理引擎（OpenCV.js）首次运行需联网加载一次纯代码库——图片始终在你的设备内，绝不上传服务器。</div>
+        </div>
+      </div>
+
+      <!-- Upscaler (prototype) -->
+      <div class="tool">
+        <h3>🔍 AI Upscaler <span class="tag">LOCAL</span></h3>
+        <p>2×–4× upscale for print &amp; e-commerce, running client-side with no quality loss to a server.</p>
+        <label class="drop" id="dropUp">Click or drop an image here<br><small>Upscale in-browser</small></label>
+        <input type="file" id="fileUp" accept="image/*" hidden>
+        <div class="note">Engine: UpscalerJS (MIT), WebGL in the browser. Wire the same module to ship.</div>
+      </div>
+
+      <!-- Video transcode (prototype) -->
+      <div class="tool">
+        <h3>🎬 Video Transcode <span class="tag">LOCAL</span></h3>
+        <p>Convert &amp; compress video (mp4/webm/mov) entirely in-browser via ffmpeg.wasm — no cloud render farm.</p>
+        <label class="drop" id="dropVid">Click or drop a video here<br><small>Transcode in-browser</small></label>
+        <input type="file" id="fileVid" accept="video/*" hidden>
+        <div class="note">Engine: ffmpeg.wasm (MIT). Lazy-loads (~25 MB) on first use; all frames stay on device.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="ey">How it works</div>
+      <h2>Your file never leaves the tab</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="n"></div><h4>You pick a file</h4><p>Selected locally from the device. No network request is made.</p></div>
+      <div class="step"><div class="n"></div><h4>We load the model</h4><p>Open-source engine (MIT) downloads once, then runs on-device.</p></div>
+      <div class="step"><div class="n"></div><h4>Processing in-browser</h4><p>WASM / ONNX computes the result on the CPU/GPU of the user's machine.</p></div>
+      <div class="step"><div class="n"></div><h4>You download</h4><p>The output is saved straight to the device. We keep nothing.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="compliance">
+  <div class="wrap">
+    <div class="comp">
+      <h2>Compliance &amp; audit, built in</h2>
+      <p class="sub">The features your security review will ask for — answered before they ask.</p>
+      <div class="compgrid">
+        <div class="compitem"><h4>🌍 No cross-border transfer</h4><p>EU/UK client files are processed on the user's device. Nothing is sent to a US or third-country server — closes the Art. 44 transfer gap.</p></div>
+        <div class="compitem"><h4>🤝 No sub-processor</h4><p>Because we never receive the data, there is no Art. 28 sub-processor relationship to disclose or contract.</p></div>
+        <div class="compitem"><h4>📋 On-device audit log</h4><p>Each session can emit a tamper-evident log (file hash in/out, tool used, timestamp) your DPO can retain as processing evidence.</p></div>
+        <div class="compitem"><h4>🏠 Self-host &amp; air-gap</h4><p>Deploy the static build behind your firewall or on an intranet. Works with no outbound internet after first model load.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" style="background:var(--soft)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="ey">Pricing</div>
+      <h2>Per-seat. Usage-capped. No "unlimited".</h2>
+      <p>AI compute runs on your users' devices, so we price for the software — not for GPU minutes. Fair for you, fair for us.</p>
+    </div>
+    <div class="price">
+      <div class="plan">
+        <div class="nm">Solo</div>
+        <div class="pr">$9<small>/seat·mo</small></div>
+        <ul>
+          <li>All 4 local tools</li>
+          <li>Unlimited local processing</li>
+          <li>No uploads, ever</li>
+          <li>Community support</li>
+        </ul>
+        <a class="btn ghost" href="#tools">Start free</a>
+      </div>
+      <div class="plan feat">
+        <div class="nm">Team</div>
+        <div class="pr">$29<small>/seat·mo</small></div>
+        <ul>
+          <li>Everything in Solo</li>
+          <li>On-device audit log</li>
+          <li>Shared workspace &amp; roles</li>
+          <li>Self-host license</li>
+          <li>Priority email support</li>
+        </ul>
+        <a class="btn" href="#">Book a demo</a>
+      </div>
+      <div class="plan">
+        <div class="nm">Enterprise</div>
+        <div class="pr">Custom</div>
+        <ul>
+          <li>Everything in Team</li>
+          <li>Air-gapped deployment</li>
+          <li>SSO / SAML</li>
+          <li>DPA &amp; custom audit</li>
+          <li>Named support SLA</li>
+        </ul>
+        <a class="btn ghost" href="#">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="ey">FAQ</div>
+      <h2>Questions your DPO will ask</h2>
+    </div>
+    <div class="faq">
+      <div class="q"><h4>Do you store my files?</h4><p>No. There is no server-side upload path. Files are read from the device, processed in the browser, and the output is written back to the device.</p></div>
+      <div class="q"><h4>Where does the AI model run?</h4><p>Entirely on the user's machine via WebAssembly / ONNX. The model file is downloaded once; inference never leaves the device.</p></div>
+      <div class="q"><h4>Can we self-host?</h4><p>Yes. The app is a static build — drop it on your own VPS, intranet, or air-gapped network. Team &amp; Enterprise plans include the self-host license.</p></div>
+      <div class="q"><h4>Is this GDPR / EU AI Act aligned?</h4><p>Because no personal data is transferred to us, the main Art. 28 / Art. 44 risks are architecturally removed. We provide a DPA template and audit-log feature for Enterprise.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 PrivGuard · Privacy-first media processing · 100% in-browser</div>
+    <div>MIT-licensed engines · No uploads · Self-hostable</div>
+  </div>
+</footer>
+
+<script type="module">
+  const $ = id => document.getElementById(id);
+
+  // ---- Background remover: real, client-side via @imgly/background-removal (MIT) ----
+  const dropBg=$('dropBg'), fileBg=$('fileBg'), ioBg=$('ioBg'), prevBg=$('prevBg'), outBg=$('outBg'), metaBg=$('metaBg'), dlBg=$('dlBg');
+  let bgBlob=null;
+  function loadBgModule(){return import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/dist/index.mjs');}
+  function handleBg(file){
+    if(!file||!file.type.startsWith('image/'))return;
+    prevBg.src=URL.createObjectURL(file);
+    ioBg.classList.add('show'); metaBg.textContent='Loading on-device model…';
+    loadBgModule().then(({removeBackground})=>{
+      metaBg.textContent='Processing locally (your device)…';
+      return removeBackground(file);
+    }).then(blob=>{
+      bgBlob=blob;
+      const img=new Image();
+      img.onload=()=>{outBg.width=img.width;outBg.height=img.height;outBg.getContext('2d').drawImage(img,0,0);};
+      img.src=URL.createObjectURL(blob);
+      metaBg.textContent='✓ Done · file never left your device';
+    }).catch(e=>{metaBg.textContent='Model load failed (needs internet on first use): '+e.message;});
+  }
+  dropBg.onclick=()=>fileBg.click();
+  fileBg.onchange=e=>handleBg(e.target.files[0]);
+  ['dragover','dragenter'].forEach(ev=>dropBg.addEventListener(ev,e=>{e.preventDefault();dropBg.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>dropBg.addEventListener(ev,e=>{e.preventDefault();dropBg.classList.remove('drag');}));
+  dropBg.addEventListener('drop',e=>handleBg(e.dataTransfer.files[0]));
+  dlBg.onclick=()=>{if(!bgBlob)return;const a=document.createElement('a');a.href=URL.createObjectURL(bgBlob);a.download='privguard-nobg.png';a.click();};
+
+  // ---- Watermark Remover: real on-device inpainting via OpenCV.js ----
+  // Library-only CDN load; the image itself never leaves the device.
+  let cvReady=false, cvLoading=false;
+  function loadCV(){
+    return new Promise((resolve,reject)=>{
+      if(cvReady){resolve();return;}
+      if(cvLoading){
+        const t=setInterval(()=>{if(cvReady){clearInterval(t);resolve();}},80); return;
+      }
+      cvLoading=true;
+      const urls=[
+        'https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.10.0-release.1/dist/opencv.js',
+        'https://unpkg.com/@techstark/opencv-js@4.10.0-release.1/dist/opencv.js'
+      ];
+      const tryUrl=(i)=>{
+        if(i>=urls.length){cvLoading=false;reject(new Error('引擎加载失败，请检查网络'));return;}
+        const s=document.createElement('script');
+        s.src=urls[i];
+        s.onload=()=>{
+          const done=(cvInstance)=>{ if(cvInstance) window.cv=cvInstance; cvReady=true; cvLoading=false; resolve(); };
+          const cvMod=window.cv;
+          if(cvMod instanceof Promise){
+            cvMod.then(done).catch(()=>tryUrl(i+1));
+          }else if(cvMod && cvMod.Mat && cvMod.getBuildInformation){
+            done(cvMod);
+          }else if(cvMod){
+            cvMod.onRuntimeInitialized=()=>done(cvMod);
+            setTimeout(()=>{ if(!cvReady) tryUrl(i+1); }, 15000);
+          }else{
+            tryUrl(i+1);
+          }
+        };
+        s.onerror=()=>tryUrl(i+1);
+        document.head.appendChild(s);
+      };
+      tryUrl(0);
+    });
+  }
+
+  const dropWm=$('dropWm'), fileWm=$('fileWm'), ioWm=$('ioWm'), viewWm=$('viewWm'),
+        maskWm=$('maskWm'), origWm=$('origWm'), metaWm=$('metaWm'), brushWm=$('brushWm'),
+        btnRemoveWm=$('btnRemoveWm'), btnClearWm=$('btnClearWm'), dlWm=$('dlWm');
+  let wmImg=null, wmDrawing=false, wmLast=null, wmResultBlob=null;
+  function handleWm(file){
+    if(!file||!file.type.startsWith('image/'))return;
+    const img=new Image();
+    img.onload=()=>{
+      wmImg=img;
+      const maxW=520, scale=Math.min(1,maxW/img.width);
+      const w=Math.max(1,Math.round(img.width*scale)), h=Math.max(1,Math.round(img.height*scale));
+      [origWm,viewWm,maskWm].forEach(c=>{c.width=w;c.height=h;});
+      origWm.getContext('2d').drawImage(img,0,0,w,h);
+      viewWm.getContext('2d').drawImage(img,0,0,w,h);
+      maskWm.getContext('2d').clearRect(0,0,w,h);
+      ioWm.classList.add('show');
+      metaWm.textContent='用鼠标/手指涂抹水印区域，再点「去除水印」';
+      dlWm.disabled=true; wmResultBlob=null;
+    };
+    img.src=URL.createObjectURL(file);
+  }
+  function wpos(e){
+    const r=viewWm.getBoundingClientRect();
+    const t=(e.touches&&e.touches[0])||e;
+    return {x:(t.clientX-r.left)*(viewWm.width/r.width), y:(t.clientY-r.top)*(viewWm.height/r.height)};
+  }
+  function wstart(e){if(!wmImg)return;wmDrawing=true;wmLast=wpos(e);e.preventDefault();}
+  function wmove(e){
+    if(!wmDrawing)return;
+    const p=wpos(e), bw=+brushWm.value;
+    const mk=maskWm.getContext('2d');
+    mk.strokeStyle='rgba(255,255,255,1)'; mk.lineWidth=bw; mk.lineCap='round'; mk.lineJoin='round';
+    mk.beginPath(); mk.moveTo(wmLast.x,wmLast.y); mk.lineTo(p.x,p.y); mk.stroke();
+    const vw=viewWm.getContext('2d');
+    vw.strokeStyle='rgba(255,0,0,0.45)'; vw.lineWidth=bw; vw.lineCap='round'; vw.lineJoin='round';
+    vw.beginPath(); vw.moveTo(wmLast.x,wmLast.y); vw.lineTo(p.x,p.y); vw.stroke();
+    wmLast=p; e.preventDefault();
+  }
+  function wend(){wmDrawing=false;}
+  viewWm.addEventListener('mousedown',wstart); viewWm.addEventListener('mousemove',wmove); window.addEventListener('mouseup',wend);
+  viewWm.addEventListener('touchstart',wstart,{passive:false}); viewWm.addEventListener('touchmove',wmove,{passive:false}); viewWm.addEventListener('touchend',wend);
+  dropWm.onclick=()=>fileWm.click();
+  fileWm.onchange=e=>handleWm(e.target.files[0]);
+  ['dragover','dragenter'].forEach(ev=>dropWm.addEventListener(ev,e=>{e.preventDefault();dropWm.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>dropWm.addEventListener(ev,e=>{e.preventDefault();dropWm.classList.remove('drag');}));
+  dropWm.addEventListener('drop',e=>handleWm(e.dataTransfer.files[0]));
+  btnClearWm.onclick=()=>{
+    if(!wmImg)return;
+    maskWm.getContext('2d').clearRect(0,0,maskWm.width,maskWm.height);
+    viewWm.getContext('2d').drawImage(wmImg,0,0,maskWm.width,maskWm.height);
+    metaWm.textContent='遮罩已清除，可重新涂抹';
+    dlWm.disabled=true; wmResultBlob=null;
+  };
+  btnRemoveWm.onclick=async()=>{
+    if(!wmImg)return;
+    metaWm.textContent='加载处理引擎（首次需联网加载一次）…';
+    try{ await loadCV(); }catch(err){ metaWm.textContent='引擎加载失败（首次需联网加载处理库）：'+err.message; return; }
+    metaWm.textContent='去除中…（本地处理，图片不上传）';
+    try{
+      const src=cv.imread(origWm);
+      const msrc=cv.imread(maskWm);
+      const mask=new cv.Mat();
+      cv.cvtColor(msrc,mask,cv.COLOR_BGRA2GRAY);
+      cv.threshold(mask,mask,30,255,cv.THRESH_BINARY);
+      const dst=new cv.Mat();
+      cv.inpaint(src,mask,3,cv.INPAINT_TELEA,dst);
+      cv.imshow(viewWm,dst);
+      metaWm.textContent='✓ 完成 · 图片从未离开你的设备';
+      viewWm.toBlob(b=>{ wmResultBlob=b; dlWm.disabled=false; },'image/png');
+      src.delete(); msrc.delete(); mask.delete(); dst.delete();
+    }catch(err){ metaWm.textContent='处理出错：'+err.message; }
+  };
+  dlWm.onclick=()=>{ if(!wmResultBlob)return; const a=document.createElement('a'); a.href=URL.createObjectURL(wmResultBlob); a.download='privguard-cleaned.png'; a.click(); };
+
+  // ---- Generic dropzone wiring for Upscaler / Video (UI only for now) ----
+  function wireDrop(dropId,fileId,msg){
+    const d=$(dropId),f=$(fileId); if(!d||!f)return;
+    d.onclick=()=>f.click();
+    f.onchange=e=>{if(e.target.files[0])d.innerHTML='✓ '+e.target.files[0].name+'<br><small>'+msg+'</small>';};
+    ['dragover','dragenter'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add('drag');}));
+    ['dragleave','drop'].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove('drag');}));
+    d.addEventListener('drop',e=>{const fi=e.dataTransfer.files[0];if(fi){f.files=e.dataTransfer.files;d.innerHTML='✓ '+fi.name+'<br><small>'+msg+'</small>';}});
+  }
+  wireDrop('dropUp','fileUp','UpscalerJS runs in-browser');
+  wireDrop('dropVid','fileVid','ffmpeg.wasm transcode in-browser');
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+name = "privguard"
+compatibility_date = "2024-09-23"
+
+# Cloudflare Pages 部署：
+#   1) 安装 wrangler: npm i -g wrangler
+#   2) 登录: wrangler login
+#   3) 部署: 在本目录(privguard/)执行  wrangler pages deploy .
+# 静态文件 index.html 即为站点根，免费托管，无需服务器。
+# OpenCV.js / @imgly 模型在前端运行时从 CDN 加载（仅加载代码库，图片不出浏览器）。
+
+[pages]
